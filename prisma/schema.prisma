@@ -4,8 +4,8 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -50,4 +50,26 @@ model User {
   status            UserStatus @default(active)
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
+
+  organizations Organization[] @relation("Organization")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teams Team[] @relation("TeamOrganization")
+
+  owner User   @relation("Organization", fields: [ownerId], references: [id], onDelete: Cascade)
+}
+
+model Team {
+  id             String @id @default(uuid())
+  name           String
+  organizationId String
+
+  organization Organization @relation("TeamOrganization", fields: [organizationId], references: [id], onDelete: Cascade)
 }
