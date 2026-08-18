@@ -6,16 +6,17 @@ import { PrismaModule } from './shared/database';
 import { RedisModule } from './shared/redis';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './lib/guards';
+import { BudgetModule } from './app/budget';
 
 @Module({
-  imports: [AuthModule, PrismaModule, RedisModule],
+  imports: [AuthModule, PrismaModule, RedisModule, BudgetModule],
   controllers: [AppController],
   providers: [
     AppService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
 })
 export class AppModule {}

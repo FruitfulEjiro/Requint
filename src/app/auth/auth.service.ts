@@ -11,7 +11,6 @@ import {
 import { UserRepo } from 'src/shared/database/repositories';
 import { CreateUserDto } from './dtos';
 import { Helper } from 'src/lib/helpers';
-import { randomUUID } from 'node:crypto';
 import { ROTATE_REFRESH_SCRIPT } from 'src/lib/scripts';
 import Redis from 'ioredis';
 
