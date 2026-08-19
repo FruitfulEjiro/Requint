@@ -55,11 +55,8 @@ export class MembershipService {
 
       return membership;
     } catch (err) {
-      this.logger.error("couldn't add member to team", err);
-      throw new InternalServerErrorException(
-        "couldn't add member to team",
-        err,
-      );
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -78,8 +75,8 @@ export class MembershipService {
 
       return member;
     } catch (err) {
-      this.logger.error("couldn't remove member", err);
-      throw new InternalServerErrorException("couldn't remove member", err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 }

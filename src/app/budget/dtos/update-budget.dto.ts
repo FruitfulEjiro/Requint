@@ -1,4 +1,3 @@
-// update-budget.dto.ts
 import { PartialType, OmitType } from '@nestjs/mapped-types';
 import { CreateBudgetDTO } from './create-budget.dto';
 

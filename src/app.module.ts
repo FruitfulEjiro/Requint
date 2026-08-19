@@ -7,9 +7,18 @@ import { RedisModule } from './shared/redis';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './lib/guards';
 import { BudgetModule } from './app/budget';
+import { ExpenseModule } from './app/expense';
+import { MembershipModule } from './app/membership/membership.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, RedisModule, BudgetModule],
+  imports: [
+    AuthModule,
+    PrismaModule,
+    RedisModule,
+    BudgetModule,
+    ExpenseModule,
+    MembershipModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

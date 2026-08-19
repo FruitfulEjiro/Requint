@@ -119,6 +119,7 @@ model User {
   invitees   Membership[] @relation("MembershipInvitedBy")
   auditlogs  Audit[]
   budgets    Budget[]
+  expenses   Expense[]
 }
 
 model Team {
@@ -215,21 +216,23 @@ model Budget {
 }
 
 model Expense {
-  id              String        @id @default(uuid())
-  teamId          String
-  submittedById   String
-  title           String
-  amount          Decimal
-  category        String // e.g. "Travel", "Equipment"
-  receiptUrl      String?
-  status          ExpenseStatus @default(pending)
-  reviewedById    String?
-  reviewedAt      DateTime?
-  rejectionReason String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id            String        @id @default(uuid())
+  teamId        String
+  submittedById String
+  title         String
+  amount        Decimal
+  category      String // e.g. "Travel", "Equipment"
+  /// [ImageDto]
+  receipt       Json?
+  status        ExpenseStatus @default(pending)
+  reviewedById  String?
+  reviewedAt    DateTime?
+  reason        String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team        Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  submittedBy User @relation(fields: [submittedById], references: [id], onDelete: Cascade)
 
   @@index([teamId])
   @@index([status])

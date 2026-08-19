@@ -1,4 +1,3 @@
-// auth/scripts/rotate-refresh.lua.ts
 export const ROTATE_REFRESH_SCRIPT = `
 local record = redis.call('GET', KEYS[1])
 if not record then

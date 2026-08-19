@@ -46,8 +46,8 @@ export class BudgetService {
 
       return budget;
     } catch (err) {
-      this.logger.error('couldnt create budget', err);
-      throw new InternalServerErrorException('couldnt create budget', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -58,8 +58,8 @@ export class BudgetService {
 
       return budget;
     } catch (err) {
-      this.logger.error('couldnt get budget', err);
-      throw new InternalServerErrorException('couldnt get budget', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -68,18 +68,21 @@ export class BudgetService {
       const budgets = await this.budgetRepo.findPaginated();
       return budgets;
     } catch (err) {
-      this.logger.error('couldnt get all budgets', err);
-      throw new InternalServerErrorException('couldnt get all budgets', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
   async getAllBudgetByTeamId(teamId: string) {
     try {
+      const team = await this.budgetRepo.checkTeam(teamId);
+      if (!team) throw new NotFoundException('team doesnt exist');
+
       const budgets = await this.budgetRepo.findPaginated({ teamId });
       return budgets;
     } catch (err) {
-      this.logger.error('couldnt get all budgets', err);
-      throw new InternalServerErrorException('couldnt get all budgets', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -88,13 +91,9 @@ export class BudgetService {
       const existing = await this.budgetRepo.findById(id);
       if (!existing) throw new NotFoundException('budget not found');
 
-      console.log(existing)
-      
       const totalAmount = Number(data.totalAmount ?? existing.totalAmount);
       const allocatedAmount =
-      Number(data.allocatedAmount) || Number(existing.allocatedAmount);
-      
-      console.log(totalAmount, allocatedAmount)
+        Number(data.allocatedAmount) || Number(existing.allocatedAmount);
 
       return this.budgetRepo
         .update(id, {
@@ -106,8 +105,8 @@ export class BudgetService {
           return data;
         });
     } catch (err) {
-      this.logger.error('couldnt update budget', err);
-      throw new InternalServerErrorException('couldnt update budget', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -125,8 +124,8 @@ export class BudgetService {
 
       return budget;
     } catch (err) {
-      this.logger.error('couldnt allocate budget', err);
-      throw new InternalServerErrorException('couldnt allocate budget', err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 }

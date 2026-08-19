@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PaginatedResult, SearchOptions } from 'src/lib/dtos';
+import { PaginatedResult } from 'src/lib/dtos';
 
 interface PrismaDelegate<T, CreateInput, WhereInput, UpdateInput> {
   create(args: { data: CreateInput }): Promise<T>;

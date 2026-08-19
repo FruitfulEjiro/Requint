@@ -88,7 +88,7 @@ export class BudgetController {
     };
   }
 
-  @Patch('/:budgetId/allocate')
+  @Post('/:budgetId/allocate')
   @HttpCode(HttpStatus.OK)
   async allocateBudget(@Param('budgetId') budgetId: string) {
     const budget = await this.budgetService.allocateBudget(budgetId);
