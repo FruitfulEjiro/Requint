@@ -3,9 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisModule } from 'src/shared/redis';
+import { EmailModule } from 'src/shared/email';
 
 @Module({
-  imports: [JwtModule, RedisModule],
+  imports: [JwtModule, RedisModule, EmailModule],
   exports: [AuthService],
   providers: [AuthService],
   controllers: [AuthController],

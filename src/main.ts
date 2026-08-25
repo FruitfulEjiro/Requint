@@ -17,6 +17,7 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+  app.setViewEngine('hbs');
 
   app.set('trust proxy', 1);
 

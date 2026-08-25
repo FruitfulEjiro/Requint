@@ -44,8 +44,8 @@ export class ExpenseService {
 
       return expense;
     } catch (err) {
-      this.logger.error("couldn't create expense", err);
-      throw new InternalServerErrorException("couldn't create expense", err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 
@@ -55,8 +55,8 @@ export class ExpenseService {
       if (!expense) throw new NotFoundException('expense not found');
       return expense;
     } catch (err) {
-      this.logger.error("couldn't get expense", err);
-      throw new InternalServerErrorException("couldn't get expense", err);
+      this.logger.error(err.message, err);
+      throw new InternalServerErrorException(err.message, err);
     }
   }
 

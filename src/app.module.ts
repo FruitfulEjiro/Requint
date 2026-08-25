@@ -9,6 +9,8 @@ import { AuthGuard } from './lib/guards';
 import { BudgetModule } from './app/budget';
 import { ExpenseModule } from './app/expense';
 import { MembershipModule } from './app/membership/membership.module';
+import { EmployeeModule } from './app/employee';
+import { EmailModule } from './shared/email';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { MembershipModule } from './app/membership/membership.module';
     BudgetModule,
     ExpenseModule,
     MembershipModule,
+    EmployeeModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [

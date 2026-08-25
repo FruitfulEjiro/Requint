@@ -1,4 +1,10 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateMemberDTO {
   @IsString()
@@ -12,4 +18,8 @@ export class CreateMemberDTO {
   @IsEmail()
   @IsNotEmpty()
   email!: string;
+
+  @IsDate()
+  @IsOptional()
+  startDate?: Date;
 }

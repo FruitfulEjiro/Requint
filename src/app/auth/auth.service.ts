@@ -13,6 +13,7 @@ import { CreateUserDto } from './dtos';
 import { Helper } from 'src/lib/helpers';
 import { ROTATE_REFRESH_SCRIPT } from 'src/lib/scripts';
 import Redis from 'ioredis';
+import { EmailService } from 'src/shared/email';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -24,6 +25,7 @@ export class AuthService implements OnModuleInit {
     private readonly redis: Redis,
     private readonly user: UserRepo,
     private readonly helper: Helper,
+    private readonly email: EmailService,
   ) {}
 
   async onModuleInit() {
@@ -61,6 +63,7 @@ export class AuthService implements OnModuleInit {
         });
 
       // send email otp to user
+      await this.email.otp(user.email, otp);
 
       return this.helper.sanitizeObject(user);
     } catch (err) {
@@ -96,6 +99,7 @@ export class AuthService implements OnModuleInit {
           });
 
         // send email otp to user
+        await this.email.otp(checkUser.email, otp);
 
         return {
           message: 'otp sent to user',

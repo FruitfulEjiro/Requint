@@ -120,6 +120,7 @@ model User {
   auditlogs  Audit[]
   budgets    Budget[]
   expenses   Expense[]
+  employee   Employee?
 }
 
 model Team {
@@ -240,19 +241,18 @@ model Expense {
 
 model Employee {
   id               String           @id @default(uuid())
-  teamId           String
-  userId           String           @unique // links to the User being described
+  teamId           String?
+  userId           String           @unique
   jobTitle         String
-  department       String
   salary           Decimal?
   startDate        DateTime
   endDate          DateTime?
   employmentStatus EmploymentStatus @default(active)
-  managerId        String?
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([teamId])
 }

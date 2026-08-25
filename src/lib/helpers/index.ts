@@ -165,10 +165,9 @@ export class Helper {
   generatePassword() {
     const length = 16;
     const charset =
-      'abcdefghijklmnopqrstuvwxyz' +
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-      '0123456789' +
-      '!@#$%^&*()_+-=[]{}|;:,.<>?';
+      'abcdefghijklmnopqrstuvwxyz-' +
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZ-' +
+      '0123456789-';
 
     const randomValues = new Uint32Array(length);
     crypto.getRandomValues(randomValues);

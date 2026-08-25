@@ -12,7 +12,7 @@ import { CreateMemberDTO } from './dtos';
 import { CurrentUser } from 'src/lib/decorators';
 import type { User } from 'generated/prisma/client';
 
-@Controller('member')
+@Controller('members')
 export class MembershipController {
   constructor(private readonly membershipService: MembershipService) {}
 
@@ -36,15 +36,17 @@ export class MembershipController {
     };
   }
 
-  @Delete('delete/:membershipId/:teamId')
+  @Post('remove/:membershipId/:teamId')
   // team lead or admin guard
   @HttpCode(HttpStatus.OK)
   async removeMember(
-    // @CurrentUser() user: User,
     @Param('membershipId') membershipId: string,
     @Param('teamId') teamId: string,
   ) {
-    const member = await this.membershipService.removeMember(membershipId, teamId);
+    const member = await this.membershipService.removeMember(
+      membershipId,
+      teamId,
+    );
 
     return {
       status: true,
