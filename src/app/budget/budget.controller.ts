@@ -7,17 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { BudgetService } from './budget.service';
 import { CreateBudgetDTO, UpdateBudgetDTO } from './dtos';
-import { CurrentUser } from 'src/lib/decorators';
+import { CurrentUser, RequirePermissions } from 'src/lib/decorators';
 import type { User } from 'generated/prisma/client';
+import { AdminGuard } from 'src/lib/guards';
 
 @Controller('budgets')
 export class BudgetController {
   constructor(private readonly budgetService: BudgetService) {}
 
   @Post('create/:teamId')
+  @RequirePermissions('budget:create')
   @HttpCode(HttpStatus.CREATED)
   async createBudget(
     @Param('teamId') teamId: string,
@@ -38,6 +41,8 @@ export class BudgetController {
   }
 
   @Get('all')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('budget:read:all')
   @HttpCode(HttpStatus.OK)
   async getAllBudgets() {
     const budgets = await this.budgetService.getAllBudgets();
@@ -50,8 +55,9 @@ export class BudgetController {
   }
 
   @Get('team/:teamId')
+  @RequirePermissions('budget:read:team')
   @HttpCode(HttpStatus.OK)
-  async getUserBudgets(@Param('teamId') teamId: string) {
+  async getTeamBudgets(@Param('teamId') teamId: string) {
     const budgets = await this.budgetService.getAllBudgetByTeamId(teamId);
 
     return {
@@ -62,6 +68,7 @@ export class BudgetController {
   }
 
   @Get('/:budgetId')
+  @RequirePermissions('budget:read')
   @HttpCode(HttpStatus.OK)
   async getBudget(@Param('budgetId') budgetId: string) {
     const budget = await this.budgetService.getBudgetById(budgetId);
@@ -74,6 +81,7 @@ export class BudgetController {
   }
 
   @Patch('update/:budgetId')
+  @RequirePermissions('budget:update')
   @HttpCode(HttpStatus.OK)
   async updateBudget(
     @Param('budgetId') budgetId: string,
@@ -89,6 +97,8 @@ export class BudgetController {
   }
 
   @Post('/:budgetId/allocate')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('budget:allocate')
   @HttpCode(HttpStatus.OK)
   async allocateBudget(@Param('budgetId') budgetId: string) {
     const budget = await this.budgetService.allocateBudget(budgetId);

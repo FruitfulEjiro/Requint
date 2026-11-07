@@ -10,6 +10,7 @@ import { Request } from 'express';
 import { Helper } from '../helpers';
 import { PrismaService } from 'src/shared/database';
 import { Reflector } from '@nestjs/core';
+import { IS_PUBLIC } from '../constants';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -22,7 +23,7 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const isPublic = this.reflector.getAllAndOverride<boolean>('isPublic', [
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
       context.getHandler(),
       context.getClass(),
     ]);

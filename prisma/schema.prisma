@@ -115,18 +115,21 @@ model User {
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
 
-  membership Membership[] @relation("UserMembership")
-  invitees   Membership[] @relation("MembershipInvitedBy")
-  auditlogs  Audit[]
-  budgets    Budget[]
-  expenses   Expense[]
-  employee   Employee?
+  membership      Membership?        @relation("UserMembership")
+  invitees        Membership[]      @relation("MembershipInvitedBy")
+  auditlogs       Audit[]
+  budgets         Budget[]
+  expenses        Expense[]
+  employee        Employee?
+  rolePermissions RolePermissions[]
 }
 
 model Team {
-  id     String     @id @default(uuid())
-  name   String
-  status TeamStatus @default(active)
+  id        String     @id @default(uuid())
+  name      String
+  status    TeamStatus @default(active)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   members       Membership[]
   permissions   Permissions[]
@@ -142,10 +145,10 @@ model Team {
 
 model Membership {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String   @unique
   invitedBy String
   teamId    String
-  role      String   @default("member")
+  role      String   @default("Member")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -155,10 +158,11 @@ model Membership {
 }
 
 model Role {
-  id              String            @id @default(uuid())
-  name            String            @unique
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   rolePermissions RolePermissions[]
 }
 
@@ -177,13 +181,15 @@ model RolePermissions {
   id           String   @id @default(uuid())
   roleId       String
   permissionId String
+  userId       String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   role        Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
   permissions Permissions @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([roleId, permissionId])
+  @@unique([roleId, permissionId, userId])
 }
 
 model Audit {
@@ -269,6 +275,7 @@ model Leave {
   reviewedById  String?
   reviewedAt    DateTime?
   createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
@@ -304,6 +311,7 @@ model Release {
   publishedAt   DateTime?
   rolledBackAt  DateTime?
   createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
 

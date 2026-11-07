@@ -7,17 +7,20 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
 import { CreateExpenseDTO, UpdateExpenseDTO } from './dtos';
-import { CurrentUser } from 'src/lib/decorators';
+import { CurrentUser, RequirePermissions } from 'src/lib/decorators';
 import type { User } from 'generated/prisma/client';
+import { AdminGuard } from 'src/lib/guards';
 
 @Controller('expenses')
 export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}
 
   @Post('create/:teamId')
+  @RequirePermissions('expense:create')
   @HttpCode(HttpStatus.CREATED)
   async createExpense(
     @CurrentUser() user: User,
@@ -37,6 +40,8 @@ export class ExpenseController {
   }
 
   @Get('all')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('expense:read:all')
   @HttpCode(HttpStatus.OK)
   async getAllExpenses() {
     const expenses = await this.expenseService.getAllExpenses();
@@ -49,6 +54,7 @@ export class ExpenseController {
   }
 
   @Get('team/:teamId')
+  @RequirePermissions('expense:read:all')
   @HttpCode(HttpStatus.OK)
   async GetExpenseByTeam(@Param('teamId') teamId: string) {
     const expenses = await this.expenseService.getAllExpensesByTeamId(teamId);
@@ -61,6 +67,7 @@ export class ExpenseController {
   }
 
   @Get('/:expenseId')
+  @RequirePermissions('expense:read')
   @HttpCode(HttpStatus.OK)
   async getExpenseById(@Param('expenseId') expenseId: string) {
     const expense = await this.expenseService.getExpenseById(expenseId);
@@ -73,6 +80,7 @@ export class ExpenseController {
   }
 
   @Patch('update/:expenseId')
+  @RequirePermissions('expense:update')
   @HttpCode(HttpStatus.OK)
   async updateExpense(
     @Param('expenseId') expenseId: string,
@@ -88,6 +96,8 @@ export class ExpenseController {
   }
 
   @Post('/:expenseId/approve')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('expense:approve:reject')
   @HttpCode(HttpStatus.OK)
   async approveExpense(
     @Param('expenseId') expenseId: string,
@@ -103,6 +113,8 @@ export class ExpenseController {
   }
 
   @Post('/:expenseId/reject')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('expense:approve:reject')
   @HttpCode(HttpStatus.OK)
   async rejectExpense(
     @Param('expenseId') expenseId: string,

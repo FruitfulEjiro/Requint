@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -204,6 +203,7 @@ export class AuthService implements OnModuleInit {
         });
 
       // send email otp to user
+      await this.email.otp(checkUser.email, otp);
 
       return {
         message: 'otp sent to user',
@@ -222,6 +222,7 @@ export class AuthService implements OnModuleInit {
       const verifyToken = await this.helper.verifyRefreshToken(token);
       console.log(verifyToken);
 
+      // check if jti has been used
       const result = (await this.redis.evalsha(
         this.rotateScriptSha,
         1,
@@ -229,9 +230,10 @@ export class AuthService implements OnModuleInit {
       )) as string | null;
 
       if (result === null) {
-        throw new UnauthorizedException('+++invalid token! login again');
+        throw new UnauthorizedException('invalid token! login again');
       }
 
+      // revoke all related tokens if token has been used
       if (result === 'REUSED') {
         const raw = await this.redis.get(`refresh:${verifyToken.jti}`);
         if (!raw)
@@ -243,14 +245,15 @@ export class AuthService implements OnModuleInit {
 
       const user = await this.user.findById(verifyToken.id);
       if (!user)
-        throw new UnauthorizedException('===invalid token! login again');
+        throw new UnauthorizedException('invalid token! login again');
       try {
         await this.helper.verify(token, user.refreshToken!);
       } catch (err) {
         this.logger.error(err);
-        throw new UnauthorizedException(',,,invalid token! login again');
+        throw new UnauthorizedException('invalid token! login again');
       }
 
+      // generate new tokens and store to db
       const { accessToken, refreshToken } = await this.helper.generateTokens({
         email: user!.email,
         id: user!.id,

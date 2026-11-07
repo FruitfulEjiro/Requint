@@ -10,22 +10,22 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { randomInt, randomUUID } from 'crypto';
 import Redis from 'ioredis';
-import { ROTATE_REFRESH_SCRIPT } from '../scripts';
+// import { ROTATE_REFRESH_SCRIPT } from '../scripts';
 
 @Injectable()
 export class Helper {
   private readonly logger = new Logger(Helper.name);
-
-  get refreshTTL() {
-    const val = process.env['REFRESH_TOKEN_COOKIE_EXPIRES_IN'];
-    return val ? Number(val) * 24 * 60 * 60 : 7 * 24 * 60 * 60;
-  }
 
   constructor(
     @Inject('REDIS_CLIENT')
     private readonly redis: Redis,
     private readonly jwt: JwtService,
   ) {}
+
+  get refreshTTL() {
+    const val = process.env['REFRESH_TOKEN_COOKIE_EXPIRES_IN'];
+    return val ? Number(val) * 24 * 60 * 60 : 7 * 24 * 60 * 60;
+  }
 
   async hash(data: string) {
     try {

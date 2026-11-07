@@ -69,6 +69,10 @@ export abstract class BaseRepository<
     };
   }
 
+  async findAll() {
+    return this.model.findMany();
+  }
+
   async update(id: string, data: UpdateInput): Promise<T> {
     return await this.model.update({ where: { id }, data });
   }

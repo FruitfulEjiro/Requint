@@ -6,15 +6,20 @@ import {
   HttpStatus,
   Param,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { UpdateEmployeeDTO } from './dtos';
+import { RequirePermissions } from 'src/lib/decorators';
+import { AdminGuard } from 'src/lib/guards';
 
 @Controller('employees')
+@UseGuards(AdminGuard)
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   @Get('all')
+  @RequirePermissions('employee:read:all')
   @HttpCode(HttpStatus.OK)
   async getAllEmployees() {
     const employees = await this.employeeService.getAllEmployees();
@@ -27,8 +32,9 @@ export class EmployeeController {
   }
 
   @Get('team/:teamId')
+  @RequirePermissions('employee:read:all')
   @HttpCode(HttpStatus.OK)
-  async GetEmployeeByTeam(@Param('teamId') teamId: string) {
+  async getEmployeeByTeam(@Param('teamId') teamId: string) {
     const employees =
       await this.employeeService.getAllEmployeesByTeamId(teamId);
 
@@ -40,8 +46,9 @@ export class EmployeeController {
   }
 
   @Get('/:employeeId')
+  @RequirePermissions('employee:read')
   @HttpCode(HttpStatus.OK)
-  async getExpenseById(@Param('employeeId') employeeId: string) {
+  async getEmployeeId(@Param('employeeId') employeeId: string) {
     const employee = await this.employeeService.getEmployeeById(employeeId);
 
     return {
@@ -52,6 +59,7 @@ export class EmployeeController {
   }
 
   @Patch('update/:employeeId')
+  @RequirePermissions('employee:update')
   @HttpCode(HttpStatus.OK)
   async updateEmployee(
     @Param('employeeId') employeeId: string,

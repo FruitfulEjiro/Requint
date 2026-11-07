@@ -12,14 +12,12 @@ import { AuthService } from './auth.service';
 import { CreateUserDto, LoginDto } from './dtos';
 import type { Request, Response } from 'express';
 import { Public } from 'src/lib/decorators';
-import { Helper } from 'src/lib/helpers';
 import { JwtRefreshGuard } from 'src/lib/guards';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly helper: Helper,
   ) {}
 
   @Public()

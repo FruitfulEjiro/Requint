@@ -6,17 +6,21 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { MembershipService } from './membership.service';
 import { CreateMemberDTO } from './dtos';
-import { CurrentUser } from 'src/lib/decorators';
+import { CurrentUser, RequirePermissions } from 'src/lib/decorators';
 import type { User } from 'generated/prisma/client';
+import { AdminGuard } from 'src/lib/guards';
 
 @Controller('members')
 export class MembershipController {
   constructor(private readonly membershipService: MembershipService) {}
 
   @Post('create/:teamId')
+  @UseGuards(AdminGuard)
+  @RequirePermissions('member:create')
   @HttpCode(HttpStatus.CREATED)
   async createMember(
     @CurrentUser() user: User,
@@ -37,7 +41,8 @@ export class MembershipController {
   }
 
   @Post('remove/:membershipId/:teamId')
-  // team lead or admin guard
+  @UseGuards(AdminGuard)
+  @RequirePermissions('member:remove')
   @HttpCode(HttpStatus.OK)
   async removeMember(
     @Param('membershipId') membershipId: string,

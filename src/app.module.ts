@@ -5,12 +5,13 @@ import { AuthModule } from './app/auth';
 import { PrismaModule } from './shared/database';
 import { RedisModule } from './shared/redis';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './lib/guards';
+import { AuthGuard, PermissionsGuard } from './lib/guards';
 import { BudgetModule } from './app/budget';
 import { ExpenseModule } from './app/expense';
 import { MembershipModule } from './app/membership/membership.module';
 import { EmployeeModule } from './app/employee';
 import { EmailModule } from './shared/email';
+import { RoleModule } from './app/role';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { EmailModule } from './shared/email';
     ExpenseModule,
     MembershipModule,
     EmployeeModule,
-    EmailModule
+    EmailModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [
@@ -29,6 +31,10 @@ import { EmailModule } from './shared/email';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
     },
   ],
 })
